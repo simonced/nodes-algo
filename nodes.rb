@@ -17,7 +17,13 @@ class Node
 		@children.push(child_)
 	end
 
-	def calculatePositions(nodeDistance_)
+	def calculatePositions(nodeDistance_, level_=0)
+		print "\n"
+		print "." * level_ + @content
+		print " a: "
+		print (Math::PI/@angle)*180
+		
+
 		# turn of the children
 		if @children.length>0 
 			i = 0
@@ -27,26 +33,24 @@ class Node
 			@children.each do |child|
 				# each child location in a circular manner
 				child.angle = angle * i
-				# if we have a parent
-				child.angle -= Math::PI/2-@angle if(@parent)
 				# child position
 				child.x = @x + nodeDistance_ * Math::cos(child.angle)
 				child.y = @y + nodeDistance_ * Math::sin(child.angle)
 				# children of child
-				child.calculatePositions(nodeDistance_)
+				child.calculatePositions(nodeDistance_, level_+1)
 				i += 1
 			end
 		end
 
-		puts @content, "x: #{@x} y: #{@y}"
-		puts "parent a: #{@angle}" if(@parent)
-
+		#puts @content, "x: #{@x} y: #{@y}"
+		#puts "parent a: #{@angle}" if(@parent)
 	end
 
 
 	def generateTree(child_min_=1, child_max_=4, level_max_=2, level_=0)
 		for i in 1..(rand(child_min_..child_max_).to_i)
-			newchild =  Node.new("@content#{i}")
+			newchild =  Node.new("#{level_}#{i}")
+			newchild.parent = self
 			if(level_<level_max_)
 				newchild.generateTree(child_min_, child_max_, level_max_, level_+1)
 			end

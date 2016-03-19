@@ -11,25 +11,47 @@ class MyWindow < Gosu::Window
 
 		@linkColor1 = Gosu::Color::RED
 		@linkColor2 = Gosu::Color::YELLOW
+		@font = Gosu::Font.new(16)
 
 		# gradation to understand level of nodes
 		@nodeColors = Array[
 			Gosu::Color.new(0xff_3858d9),
 			Gosu::Color.new(0xff_714cd0),
 			Gosu::Color.new(0xff_ab41c7),
-			Gosu::Color.new(0xff_d938c1)
+			Gosu::Color.new(0xff_d938c1),
+			Gosu::Color::GREEN
 		]
 		@nodeDistance = 50;
 		@nodeSize = 10;
 
-
 		# faking discussion
-		@theme = Node.new("node1")
+		@theme = Node.new("0")
 		# random tree
-		@theme.generateTree(2, 5, 2)
+		#@theme.generateTree(2, 4, 2)
+		@theme.generateTree(2, 2, 1)
+
+		#child = Node.new("bbb1")
+		#child.addChild( Node.new("ccc1"))
+		#child.addChild( Node.new("ccc2"))
+		#child.addChild( Node.new("ccc3"))
+		#@theme.addChild(child)
+        #
+		#child = Node.new("bbb1")
+		#child.addChild( Node.new("ddd1"))
+		#child.addChild( Node.new("ddd2"))
+		#child.addChild( Node.new("ccc3"))
+		#@theme.addChild(child.dup)
+        #
+		#child = Node.new("bbb1")
+		#child.addChild( Node.new("eee1"))
+		#child.addChild( Node.new("eee2"))
+		#child.addChild( Node.new("ccc3"))
+		#@theme.addChild(child.dup)
+
 		# pre-calculate all nodes positions
 		@theme.calculatePositions(@nodeDistance)
 		#close
+		STDOUT.flush
 	end
 
 
@@ -52,7 +74,10 @@ class MyWindow < Gosu::Window
 	def drawNode(node_, level_=0)
 		# local values for display only
 		node_x, node_y = shiftToCenter(node_.x, node_.y)
-		drawCircle(node_x, node_y, @nodeSize, @nodeColors[level_])
+		node_size = @nodeSize-(level_*2)
+		#node_size = @nodeSize
+		drawCircle(node_x, node_y, node_size, @nodeColors[level_])
+		@font.draw(node_.content, node_x, node_y, 1)
 
 		# turn of the children
 		if node_.children.length>0 
