@@ -43,4 +43,14 @@ class Node
 
 	end
 
+
+	def generateTree(child_min_=1, child_max_=4, level_max_=2, level_=0)
+		for i in 1..(rand(child_min_..child_max_).to_i)
+			newchild =  Node.new("@content#{i}")
+			if(level_<level_max_)
+				newchild.generateTree(child_min_, child_max_, level_max_, level_+1)
+			end
+			@children.push(newchild)
+		end
+	end
 end

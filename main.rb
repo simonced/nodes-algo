@@ -25,24 +25,8 @@ class MyWindow < Gosu::Window
 
 		# faking discussion
 		@theme = Node.new("node1")
-		# add 3 children level 1
-		for i in 1..3
-			child = Node.new("node1#{i}")
-			# only first and third child have 2 children
-			if(i==1)
-				child.addChild( Node.new("#{child.content}1") )
-				child.addChild( Node.new("#{child.content}2") )
-				child.addChild( Node.new("#{child.content}3") )
-				child.addChild( Node.new("#{child.content}4") )
-			end
-			if(i==3)
-				child.addChild( Node.new("#{child.content}1") )
-				child.addChild( Node.new("#{child.content}2") )
-				child.addChild( Node.new("#{child.content}3") )
-			end
-			@theme.addChild(child)
-		end
-
+		# random tree
+		@theme.generateTree(2, 5, 2)
 		# pre-calculate all nodes positions
 		@theme.calculatePositions(@nodeDistance)
 		#close
