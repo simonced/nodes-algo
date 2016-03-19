@@ -1,0 +1,7 @@
+* nodes-algo
+
+チャットのグラフのアルゴリズムの遊び
+
+* 必要なライブラリー
+
+- [[https://www.libgosu.org/][Gosu]]
