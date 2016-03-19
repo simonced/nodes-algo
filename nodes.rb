@@ -1,14 +1,15 @@
 
 class Node
 
-	attr_reader :x, :y, :children, :parent, :content
-	attr_writer :x, :y, :parent
+	attr_reader :x, :y, :children, :parent, :content, :angle
+	attr_writer :x, :y, :parent, :angle
 
 	def initialize(content_)
 		@parent = nil
 		@children = Array.new
 		@content = content_
 		@x, @y = 0, 0
+		@angle = 0
 	end
 
 	def addChild(child_)
@@ -17,22 +18,20 @@ class Node
 	end
 
 	def calculatePositions(nodeDistance_)
-		# Depending on the level, we should have different node colors
-		if @parent
-			#TODO orient child differently
-			#drawCircle(node_.x, node_.y, @nodeSize, @nodeColor)
-		end
-
 		# turn of the children
 		if @children.length>0 
 			i = 0
 			nodes_count = @children.length
 			nodes_count += 1 if(@parent)
-			child_angle = (Math::PI * 2) / nodes_count
+			angle = (Math::PI * 2) / nodes_count
 			@children.each do |child|
 				# each child location in a circular manner
-				child.x = @x + nodeDistance_ * Math::cos(child_angle * i)
-				child.y = @y + nodeDistance_ * Math::sin(child_angle * i)
+				child.angle = angle * i
+				# if we have a parent
+				child.angle -= Math::PI/2-@angle if(@parent)
+				# child position
+				child.x = @x + nodeDistance_ * Math::cos(child.angle)
+				child.y = @y + nodeDistance_ * Math::sin(child.angle)
 				# children of child
 				child.calculatePositions(nodeDistance_)
 				i += 1
@@ -40,6 +39,8 @@ class Node
 		end
 
 		puts @content, "x: #{@x} y: #{@y}"
+		puts "parent a: #{@angle}" if(@parent)
+
 	end
 
 end

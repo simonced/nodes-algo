@@ -29,9 +29,16 @@ class MyWindow < Gosu::Window
 		for i in 1..3
 			child = Node.new("node1#{i}")
 			# only first and third child have 2 children
-			if(i==1 || i==3)
+			if(i==1)
 				child.addChild( Node.new("#{child.content}1") )
 				child.addChild( Node.new("#{child.content}2") )
+				child.addChild( Node.new("#{child.content}3") )
+				child.addChild( Node.new("#{child.content}4") )
+			end
+			if(i==3)
+				child.addChild( Node.new("#{child.content}1") )
+				child.addChild( Node.new("#{child.content}2") )
+				child.addChild( Node.new("#{child.content}3") )
 			end
 			@theme.addChild(child)
 		end
