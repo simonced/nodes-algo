@@ -5,3 +5,38 @@
 * 必要なライブラリー
 
 - [[https://www.libgosu.org/][Gosu]]
+
+* 使い方
+簡単にすると：
+: ruby main.rb
+
+** 設定
+~main.rb~ にある ~nodes~ を作るループは：
+
+#+BEGIN_SRC ruby
+  # faking discussion
+  @theme = Node.new("node1")
+  # add 3 children level 1
+  for i in 1..3
+    child = Node.new("node1#{i}")
+    # only first and third child have 2 children
+    if(i==1 || i==3)
+      child.addChild( Node.new("#{child.content}1") )
+      child.addChild( Node.new("#{child.content}2") )
+    end
+    @theme.addChild(child)
+  end
+
+  # pre-calculate all nodes positions
+  @theme.calculatePositions(@nodeDistance)
+#+END_SRC
+
+下記のノードになります：
+- node1
+  - node11
+    - node111
+    - node112
+  - node12
+  - node13
+    - node131
+    - node132
