@@ -29,10 +29,11 @@ class Node
 			i = 0
 			nodes_count = @children.length
 			nodes_count += 1 if(@parent)
-			angle = (Math::PI * 2) / nodes_count
+			childAngle = (Math::PI * 2) / nodes_count
 			@children.each do |child|
 				# each child location in a circular manner
-				child.angle = angle * i
+				child.angle = childAngle * i;
+				child.angle -= (Math::PI - @angle - childAngle) if @parent
 				# child position
 				child.x = @x + nodeDistance_ * Math::cos(child.angle)
 				child.y = @y + nodeDistance_ * Math::sin(child.angle)

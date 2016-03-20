@@ -27,8 +27,8 @@ class MyWindow < Gosu::Window
 		# faking discussion
 		@theme = Node.new("0")
 		# random tree
-		#@theme.generateTree(2, 4, 2)
-		@theme.generateTree(2, 2, 1)
+		@theme.generateTree(2, 3, 3)
+		#@theme.generateTree(2, 2, 1)
 
 		#child = Node.new("bbb1")
 		#child.addChild( Node.new("ccc1"))
@@ -107,7 +107,10 @@ class MyWindow < Gosu::Window
 
 
 	def draw
-		drawNode(@theme)
+		#Display of all graph
+		#drawNode(@theme)
+		#Display of the first branch
+		drawNode(@theme.children[0])
 	end
 end
 
