@@ -2,6 +2,8 @@
 
 チャットのグラフのアルゴリズムの遊び
 
+[[file:screens/mouse-over01.png]]
+
 * 必要なライブラリー
 
 - [[https://www.libgosu.org/][Gosu]]
