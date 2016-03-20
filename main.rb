@@ -115,7 +115,7 @@ class MyWindow < Gosu::Window
 		# draw link with parent if any
 		if node_.parent
 			parent_x, parent_y = shiftToCenter(node_.parent.x, node_.parent.y)
-			if !@highlight || @highlight && node_.highlight
+			if node_.highlight
 				linkColor1 = @linkColor1
 				linkColor2 = @linkColor2
 			else
