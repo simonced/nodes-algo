@@ -18,11 +18,10 @@ class Node
 	end
 
 	def calculatePositions(nodeDistance_, level_=0)
-		print "\n"
 		print "." * level_ + @content
 		print " a: "
 		print (Math::PI/@angle)*180
-		
+		print "\n"
 
 		# turn of the children
 		if @children.length>0 

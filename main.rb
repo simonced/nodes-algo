@@ -4,6 +4,7 @@ require './nodes.rb'
 
 class MyWindow < Gosu::Window
 
+	LevelMax = 4
 
 	def initialize
 		super 640, 480, false
@@ -16,11 +17,11 @@ class MyWindow < Gosu::Window
 		# gradation to understand level of nodes
 		# gradient generator found at: http://www.perbang.dk/rgbgradient/
 		@nodeColors = Array[
-			Gosu::Color.new(0xff_4F24FF),
-			Gosu::Color.new(0xff_4A5AC9),
+			Gosu::Color.new(0xff_4f24ff),
+			Gosu::Color.new(0xff_4a5ac9),
 			Gosu::Color.new(0xff_459194),
-			Gosu::Color.new(0xff_40C85E),
-			Gosu::Color.new(0xff_3BFF29)
+			Gosu::Color.new(0xff_40c85e),
+			Gosu::Color.new(0xff_3bff29)
 		]
 		@nodeDistance = 50;
 		@nodeSize = 10;
@@ -30,6 +31,7 @@ class MyWindow < Gosu::Window
 		# random tree
 		@theme.generateTree(2, 3, 3)
 		#@theme.generateTree(2, 2, 1)
+		#@theme.generateTree(2, 4, 4)
 
 		#child = Node.new("bbb1")
 		#child.addChild( Node.new("ccc1"))
@@ -58,6 +60,7 @@ class MyWindow < Gosu::Window
 
 	# My custom methods
 	def drawCircle(x_, y_, radius_, col_)
+		# >>>
 		steps = 10
 		base_radians = Math::PI * 2 / steps
 		for i in 0..steps
@@ -68,6 +71,12 @@ class MyWindow < Gosu::Window
 
 			draw_line(x, y, col_, x_n, y_n, col_)
 		end
+		# <<<
+	end # end drawCircle
+
+
+	def shiftToCenter(x_, y_)
+		tmp = Array[x_ + (self.width / 2), y_ + (self.height / 2)]
 	end
 
 
@@ -75,9 +84,17 @@ class MyWindow < Gosu::Window
 	def drawNode(node_, level_=0)
 		# local values for display only
 		node_x, node_y = shiftToCenter(node_.x, node_.y)
-		node_size = @nodeSize-(level_*2)
+
+		if level_<LevelMax
+			node_size = @nodeSize-(level_*2)
+			node_color = @nodeColors[level_]
+		else
+			node_size = @nodeSize-(LevelMax)
+			node_color = @nodeColors[LevelMax]
+		end
+
 		#node_size = @nodeSize
-		drawCircle(node_x, node_y, node_size, @nodeColors[level_])
+		drawCircle(node_x, node_y, node_size, node_color)
 		@font.draw(node_.content, node_x, node_y, 1)
 
 		# turn of the children
@@ -90,10 +107,7 @@ class MyWindow < Gosu::Window
 		end
 	end
 
-	def shiftToCenter(x_, y_)
-		tmp = Array[x_ + (self.width / 2), y_ + (self.height / 2)]
-	end
-
+	#======================================================================
 	#GOSU methods
 
 	def update
@@ -109,11 +123,13 @@ class MyWindow < Gosu::Window
 
 	def draw
 		#Display of all graph
-		#drawNode(@theme)
+		drawNode(@theme)
+
 		#Display of the first branch
-		drawNode(@theme.children[0])
+		#drawNode(@theme.children[0])
 	end
-end
+
+end # end class
 
 window = MyWindow.new
 window.show
