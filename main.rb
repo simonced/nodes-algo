@@ -14,12 +14,13 @@ class MyWindow < Gosu::Window
 		@font = Gosu::Font.new(16)
 
 		# gradation to understand level of nodes
+		# gradient generator found at: http://www.perbang.dk/rgbgradient/
 		@nodeColors = Array[
-			Gosu::Color.new(0xff_3858d9),
-			Gosu::Color.new(0xff_714cd0),
-			Gosu::Color.new(0xff_ab41c7),
-			Gosu::Color.new(0xff_d938c1),
-			Gosu::Color::GREEN
+			Gosu::Color.new(0xff_4F24FF),
+			Gosu::Color.new(0xff_4A5AC9),
+			Gosu::Color.new(0xff_459194),
+			Gosu::Color.new(0xff_40C85E),
+			Gosu::Color.new(0xff_3BFF29)
 		]
 		@nodeDistance = 50;
 		@nodeSize = 10;
