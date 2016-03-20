@@ -121,7 +121,7 @@ class MyWindow < Gosu::Window
 			else
 				linkColor1 = linkColor2 = Gosu::Color::GRAY
 			end
-			draw_line(node_x, node_y, linkColor1, parent_x, parent_y, linkColor2, z)
+			draw_line(parent_x, parent_y, linkColor1, node_x, node_y, linkColor2, z)
 		end
 
 		# turn of the children
@@ -187,3 +187,5 @@ end # end class
 
 window = MyWindow.new
 window.show
+
+# vim: foldmethod=marker
