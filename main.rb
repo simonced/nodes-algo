@@ -4,6 +4,7 @@ require './nodes.rb'
 
 class MyWindow < Gosu::Window
 
+	DisplayLabels = false
 	LevelMax = 4
 
 	def initialize
@@ -34,6 +35,7 @@ class MyWindow < Gosu::Window
 		@theme.generateTree(0, 6, 3)
 		#@theme.generateTree(2, 4, 4)
 
+		# tests >>>
 		#child = Node.new("bbb1")
 		#child.addChild( Node.new("ccc1"))
 		#child.addChild( Node.new("ccc2"))
@@ -51,16 +53,19 @@ class MyWindow < Gosu::Window
 		#child.addChild( Node.new("eee2"))
 		#child.addChild( Node.new("ccc3"))
 		#@theme.addChild(child.dup)
+		# <<<
 
 		# pre-calculate all nodes positions
-		@theme.calculatePositions(@nodeDistance)
+		@nodes = @theme.calculatePositions(@nodeDistance)
 		#close
+		puts "Nodes: #{@nodes.length}"
 		STDOUT.flush
+
 	end
 
 
 	# My custom methods
-	def drawCircle(x_, y_, radius_, col_)
+	def drawCircle(x_, y_, radius_, col_, z_=1)
 		# >>>
 		steps = 10
 		base_radians = Math::PI * 2 / steps
@@ -70,7 +75,7 @@ class MyWindow < Gosu::Window
 			x_n = x_ + radius_ * Math::cos(base_radians * (i+1));
 			y_n = y_ + radius_ * Math::sin(base_radians * (i+1));
 
-			draw_line(x, y, col_, x_n, y_n, col_)
+			draw_line(x, y, col_, x_n, y_n, col_, z_)
 		end
 		# <<<
 	end # end drawCircle
@@ -83,26 +88,45 @@ class MyWindow < Gosu::Window
 
 	# drawing a Node
 	def drawNode(node_, level_=0)
+		z = 1
+		z = 2 if node_.highlight
 		# local values for display only
 		node_x, node_y = shiftToCenter(node_.x, node_.y)
 
-		if level_<LevelMax
-			node_size = @nodeSize-(level_*2)
-			node_color = @nodeColors[level_]
+		if node_.over
+			node_size = @nodeSize + (@nodeSize/10)
+			node_color = Gosu::Color::WHITE
 		else
-			node_size = @nodeSize-(LevelMax)
-			node_color = @nodeColors[LevelMax]
+			if level_<LevelMax
+				node_size = @nodeSize-(level_/LevelMax)
+				node_color = @nodeColors[level_]
+			else
+				node_size = @nodeSize-(level_*LevelMax)
+				node_color = @nodeColors[LevelMax]
+			end
 		end
 
 		#node_size = @nodeSize
-		drawCircle(node_x, node_y, node_size, node_color)
-		@font.draw(node_.content, node_x, node_y, 1)
+		drawCircle(node_x, node_y, node_size, node_color, z)
+
+		# draw node text (content)
+		@font.draw(node_.content, node_x, node_y, 1) if DisplayLabels
+
+		# draw link with parent if any
+		if node_.parent
+			parent_x, parent_y = shiftToCenter(node_.parent.x, node_.parent.y)
+			if !@highlight || @highlight && node_.highlight
+				linkColor1 = @linkColor1
+				linkColor2 = @linkColor2
+			else
+				linkColor1 = linkColor2 = Gosu::Color::GRAY
+			end
+			draw_line(node_x, node_y, linkColor1, parent_x, parent_y, linkColor2, z)
+		end
 
 		# turn of the children
 		if node_.children.length>0 
 			node_.children.each do |child|
-				child_x, child_y = shiftToCenter(child.x, child.y)
-				draw_line(node_x, node_y, @linkColor1, child_x, child_y, @linkColor2)
 				drawNode(child, level_+1)
 			end
 		end
@@ -112,6 +136,35 @@ class MyWindow < Gosu::Window
 	#GOSU methods
 
 	def update
+		is_over = false
+		# searching for node under pointer
+		@nodes.each{ |node|
+			node_x, node_y = shiftToCenter(node.x, node.y)
+			# intersection of pointer on node?
+			over = Gosu::distance(mouse_x, mouse_y, node_x, node_y)<=10
+			node.over = over
+			# then, we set the tree back to root in highlight mode
+			# clear previous node highlight
+			if @highlight && @highlight != node && over
+				@highlight.setHighlightTrunk(false)
+			end
+			if over
+				is_over = true
+				node.setHighlightTrunk(true)
+				@highlight = node
+			end
+		}
+
+		# if no over, we clear highlight of previous branch
+		if !is_over && @highlight
+			@highlight.setHighlightTrunk(false)
+			@highlight = nil
+		end
+	end
+
+
+	def needs_cursor?
+		true
 	end
 
 

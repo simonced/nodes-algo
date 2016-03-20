@@ -4,6 +4,10 @@ class Node
 	attr_reader :x, :y, :children, :parent, :content, :angle
 	attr_writer :x, :y, :parent, :angle
 
+	# attributes for interractions
+	attr_reader :over, :highlight
+	attr_writer :over, :highlight
+
 	def initialize(content_)
 		@parent = nil
 		@children = Array.new
@@ -17,11 +21,19 @@ class Node
 		@children.push(child_)
 	end
 
+	# calculate children positions
+	# @param int level_ child level
+	# @param float nodeDistance_ node distance
+	# @return Array flat list of all nodes
 	def calculatePositions(nodeDistance_, level_=0)
 		print "." * level_ + @content
 		#print " a: "
 		#print (Math::PI/@angle)*180
 		print "\n"
+		# returning list of positions
+		nodesList = Array.new
+		# first, ourself
+		nodesList << self
 
 		# turn of the children
 		if @children.length>0
@@ -49,13 +61,16 @@ class Node
 				child.x = @x + nodeDistance * Math::cos(child.angle)
 				child.y = @y + nodeDistance * Math::sin(child.angle)
 				# children of child
-				child.calculatePositions(nodeDistance_, level_+1)
+				nodesList += child.calculatePositions(nodeDistance_, level_+1)
 				i += 1
 			end
 		end
 
 		#puts @content, "x: #{@x} y: #{@y}"
 		#puts "parent a: #{@angle}" if(@parent)
+
+		#return list we had
+		nodesList
 	end
 
 
@@ -69,4 +84,11 @@ class Node
 			@children.push(newchild)
 		end
 	end
+
+
+	def setHighlightTrunk(flag_)
+		@highlight = flag_
+		@parent.setHighlightTrunk(flag_) if @parent
+	end
+
 end
