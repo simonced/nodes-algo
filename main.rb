@@ -31,7 +31,8 @@ class MyWindow < Gosu::Window
 		# random tree
 		#@theme.generateTree(2, 2, 1)
 		#@theme.generateTree(2, 3, 3)
-		@theme.generateTree(2, 4, 4)
+		@theme.generateTree(0, 6, 3)
+		#@theme.generateTree(2, 4, 4)
 
 		#child = Node.new("bbb1")
 		#child.addChild( Node.new("ccc1"))

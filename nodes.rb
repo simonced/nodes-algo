@@ -19,31 +19,35 @@ class Node
 
 	def calculatePositions(nodeDistance_, level_=0)
 		print "." * level_ + @content
-		print " a: "
-		print (Math::PI/@angle)*180
+		#print " a: "
+		#print (Math::PI/@angle)*180
 		print "\n"
 
 		# turn of the children
-		if @children.length>0 
+		if @children.length>0
 			i = 0
-			nodes_count = @children.length
-			nodes_count += 1 if @parent
 
 			if @parent
 				#child
+				nodes_count = @children.length + 1
 				childAngle = (Math::PI) / nodes_count
+				childAngleOffset = (Math::PI/2 - @angle - childAngle)
 			else
 				#root
+				nodes_count = @children.length
 				childAngle = (Math::PI * 2) / nodes_count
+				childAngleOffset = 0
 			end
+
+			# depending on the level. we increase the distance a little
+			nodeDistance = nodeDistance_ + ((nodeDistance_/5) * level_)
 
 			@children.each do |child|
 				# each child location in a circular manner
-				child.angle = childAngle*i
-				child.angle -= (Math::PI/2 - @angle - childAngle) if @parent
+				child.angle = childAngle*i - childAngleOffset
 				# child position
-				child.x = @x + nodeDistance_ * Math::cos(child.angle)
-				child.y = @y + nodeDistance_ * Math::sin(child.angle)
+				child.x = @x + nodeDistance * Math::cos(child.angle)
+				child.y = @y + nodeDistance * Math::sin(child.angle)
 				# children of child
 				child.calculatePositions(nodeDistance_, level_+1)
 				i += 1
