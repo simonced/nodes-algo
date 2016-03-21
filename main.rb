@@ -24,8 +24,10 @@ class MyWindow < Gosu::Window
 			Gosu::Color.new(0xff_40c85e),
 			Gosu::Color.new(0xff_3bff29)
 		]
-		@nodeDistance = 50;
-		@nodeSize = 10;
+		@nodeDistance = 50
+		@nodeSize = 10
+		@highlight = nil	# currently highlighted nodes
+		@over = nil			# currenlty over node
 
 		# faking discussion
 		@theme = Node.new("0")
@@ -151,7 +153,7 @@ class MyWindow < Gosu::Window
 			if over
 				is_over = true
 				node.setHighlightTrunk(true)
-				@highlight = node
+				@over = @highlight = node
 			end
 		}
 
@@ -163,18 +165,31 @@ class MyWindow < Gosu::Window
 	end
 
 
+	# mouse related!
+	# ==============
 	def needs_cursor?
 		true
 	end
 
 
+	# inputs, keyboard and mouse
+	# ==========================
 	def button_down(id)
 		if id == Gosu::KbEscape
 			close
 		end
+
+		if id == Gosu::MsLeft && @over then
+			newNode = Node.new("#{@over.content}/#{@over.children.count+1}")
+			@over.addChild(newNode)
+			@over.calculatePositions(@nodeDistance)
+			@nodes << newNode
+		end
 	end
 
 
+	# rendering
+	# =========
 	def draw
 		#Display of all graph
 		drawNode(@theme)
