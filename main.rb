@@ -15,6 +15,9 @@ class MyWindow < Gosu::Window
 		@linkColor2 = Gosu::Color::YELLOW
 		@font = Gosu::Font.new(16)
 		@displayLabels = false
+		# shift display values for panning and centering
+		@panX = self.width/2
+		@panY = self.height/2
 
 		# gradation to understand level of nodes
 		# gradient generator found at: http://www.perbang.dk/rgbgradient/
@@ -85,7 +88,11 @@ class MyWindow < Gosu::Window
 
 
 	def shiftToCenter(x_, y_)
-		tmp = Array[x_ + (self.width / 2), y_ + (self.height / 2)]
+		new_x = x_ + @panX
+		new_x -= @panXstart - mouse_x if @panXstart
+		new_y = y_ + @panY
+		new_y -= @panYstart - mouse_y if @panYstart
+		Array[ new_x , new_y]
 	end
 
 
@@ -97,20 +104,17 @@ class MyWindow < Gosu::Window
 		node_x, node_y = shiftToCenter(node_.x, node_.y)
 
 		if node_.over
-			node_size = @nodeSize + (@nodeSize/10)
 			node_color = Gosu::Color::WHITE
 		else
 			if level_<LevelMax
-				node_size = @nodeSize-(level_/LevelMax)
 				node_color = @nodeColors[level_]
 			else
-				node_size = @nodeSize-(level_*LevelMax)
 				node_color = @nodeColors[LevelMax]
 			end
 		end
 
 		#node_size = @nodeSize
-		drawCircle(node_x, node_y, node_size, node_color, z)
+		drawCircle(node_x, node_y, @nodeSize, node_color, z)
 
 		# draw node text (content)
 		@font.draw(node_.content, node_x, node_y, 1) if @displayLabels
@@ -139,6 +143,7 @@ class MyWindow < Gosu::Window
 	#GOSU methods
 
 	def update
+
 		is_over = false
 		# searching for node under pointer
 		@nodes.each{ |node|
@@ -176,22 +181,41 @@ class MyWindow < Gosu::Window
 	# inputs, keyboard and mouse
 	# ==========================
 	def button_down(id)
-		puts id
+		#puts id
+
 		# closing the APP
 		if id == Gosu::KbEscape
 			close
 		end
 
 		# left mouse click
-		if id == Gosu::MsLeft && @over then
-			newNode = Node.new("#{@over.content}/#{@over.children.count+1}")
-			@over.addChild(newNode)
-			@over.calculatePositions(@nodeDistance)
-			@nodes << newNode
+		if id == Gosu::MsLeft
+			if @over
+				# click on a node
+				newNode = Node.new("#{@over.content}/#{@over.children.count+1}")
+				@over.addChild(newNode)
+				@over.calculatePositions(@nodeDistance)
+				@nodes << newNode
+			else
+				# click anywhere to pan
+				@panXstart, @panYstart = mouse_x, mouse_y
+			end
 		end
 
 		if id == Gosu::KbL
 			@displayLabels = !@displayLabels
+		end
+	end
+
+
+	def button_up(id)
+
+		# mouse
+		if id == Gosu::MsLeft
+			# stop panning
+			@panX -= @panXstart - mouse_x if @panXstart
+			@panY -= @panYstart - mouse_y if @panYstart
+			@panXstart = @panYstart = nil
 		end
 	end
 
