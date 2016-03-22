@@ -14,6 +14,7 @@ class MyWindow < Gosu::Window
 		@linkColor1 = Gosu::Color::RED
 		@linkColor2 = Gosu::Color::YELLOW
 		@font = Gosu::Font.new(16)
+		@displayLabels = false
 
 		# gradation to understand level of nodes
 		# gradient generator found at: http://www.perbang.dk/rgbgradient/
@@ -112,7 +113,7 @@ class MyWindow < Gosu::Window
 		drawCircle(node_x, node_y, node_size, node_color, z)
 
 		# draw node text (content)
-		@font.draw(node_.content, node_x, node_y, 1) if DisplayLabels
+		@font.draw(node_.content, node_x, node_y, 1) if @displayLabels
 
 		# draw link with parent if any
 		if node_.parent
@@ -160,7 +161,7 @@ class MyWindow < Gosu::Window
 		# if no over, we clear highlight of previous branch
 		if !is_over && @highlight
 			@highlight.setHighlightTrunk(false)
-			@highlight = nil
+			@over = @highlight = nil
 		end
 	end
 
@@ -175,15 +176,22 @@ class MyWindow < Gosu::Window
 	# inputs, keyboard and mouse
 	# ==========================
 	def button_down(id)
+		puts id
+		# closing the APP
 		if id == Gosu::KbEscape
 			close
 		end
 
+		# left mouse click
 		if id == Gosu::MsLeft && @over then
 			newNode = Node.new("#{@over.content}/#{@over.children.count+1}")
 			@over.addChild(newNode)
 			@over.calculatePositions(@nodeDistance)
 			@nodes << newNode
+		end
+
+		if id == Gosu::KbL
+			@displayLabels = !@displayLabels
 		end
 	end
 

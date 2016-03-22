@@ -26,10 +26,8 @@ class Node
 	# @param float nodeDistance_ node distance
 	# @return Array flat list of all nodes
 	def calculatePositions(nodeDistance_, level_=0)
-		print "." * level_ + @content
-		#print " a: "
-		#print (Math::PI/@angle)*180
-		print "\n"
+		#print "." * level_ + @content
+		#print "\n"
 		# returning list of positions
 		nodesList = Array.new
 		# first, ourself
