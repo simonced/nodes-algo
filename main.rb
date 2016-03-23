@@ -18,6 +18,7 @@ class MyWindow < Gosu::Window
 		# shift display values for panning and centering
 		@panX = self.width/2
 		@panY = self.height/2
+		@zoom = 1
 
 		# gradation to understand level of nodes
 		# gradient generator found at: http://www.perbang.dk/rgbgradient/
@@ -36,9 +37,9 @@ class MyWindow < Gosu::Window
 		# faking discussion
 		@theme = Node.new("0")
 		# random tree
-		#@theme.generateTree(2, 2, 1)
+		@theme.generateTree(2, 2, 1)
 		#@theme.generateTree(2, 3, 3)
-		@theme.generateTree(0, 6, 3)
+		#@theme.generateTree(0, 6, 3)
 		#@theme.generateTree(2, 4, 4)
 
 		# tests >>>
@@ -87,11 +88,19 @@ class MyWindow < Gosu::Window
 	end # end drawCircle
 
 
+	# adding zoom support
 	def shiftToCenter(x_, y_)
 		new_x = x_ + @panX
 		new_x -= @panXstart - mouse_x if @panXstart
 		new_y = y_ + @panY
 		new_y -= @panYstart - mouse_y if @panYstart
+		# zoom test
+		new_x += new_x * @zoom
+		new_y += new_y * @zoom
+		#recenter after zoom
+		new_x -= self.width/2*@zoom
+		new_y -= self.height/2*@zoom
+		#return
 		Array[ new_x , new_y]
 	end
 
@@ -202,6 +211,17 @@ class MyWindow < Gosu::Window
 			end
 		end
 
+		if id == Gosu::MsWheelDown
+			puts "Zoom in"
+			@zoom = @zoom - 0.1 if @zoom>0.1
+		end
+
+		if id == Gosu::MsWheelUp
+			puts "Zoom out"
+			@zoom = @zoom + 0.1
+		end
+
+		# display of labels switch
 		if id == Gosu::KbL
 			@displayLabels = !@displayLabels
 		end

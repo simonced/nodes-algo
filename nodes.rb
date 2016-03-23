@@ -1,4 +1,3 @@
-
 class Node
 
 	attr_reader :x, :y, :children, :parent, :content, :angle
