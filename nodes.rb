@@ -71,11 +71,51 @@ class Node
 	end
 
 
+	# calculate nodes positions, but with Graphviz
+	def calculatePositionsDot()
+		dotfile = "tmp.dot"
+		command = "dot -Tplain -Ktwopi -otmp.txt #{dotfile}"
+		commandGraph = "dot -Tpng -Ktwopi -otmp.png #{dotfile}"
+		struct = "digraph tmp {\n"
+		struct << "ordering=out\n"
+		struct << "ranksep=3\n"
+		struct << "overlap=false\n"
+		struct << "ratio=auto\n"
+		struct << _getChildrenDot()
+		struct << "}"
+		#puts struct
+
+		File.open(dotfile, 'w') { |file| file.write(struct) }
+		result = `#{command}`
+		#puts result
+		#`#{commandGraph}`
+
+	end
+
+
+	def _getChildrenDot
+		struct = ""
+		#only for root
+		struct << "n#{@content} [root=\"true\"]\n" if !@parent
+		@children.each{ |n|
+			#self and direct child
+			line = "n#{@content} -> n#{n.content}\n"
+			line.gsub! '/', 'x'
+			struct << line
+			#then loop next level
+			struct << n._getChildrenDot
+		}
+		struct
+	end
+
+
+	# random tree generation
 	def generateTree(child_min_=1, child_max_=4, level_max_=2, level_=0)
 		for i in 1..(rand(child_min_..child_max_).to_i)
 			newchild =  Node.new("#{@content}/#{i}")
 			newchild.parent = self
-			if(level_<level_max_)
+			# not continuing a branch everytime
+			if(level_<level_max_ && rand > 0.3)
 				newchild.generateTree(child_min_, child_max_, level_max_, level_+1)
 			end
 			@children.push(newchild)

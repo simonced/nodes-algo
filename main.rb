@@ -37,10 +37,10 @@ class MyWindow < Gosu::Window
 		# faking discussion
 		@theme = Node.new("0")
 		# random tree
-		@theme.generateTree(2, 2, 1)
+		#@theme.generateTree(2, 2, 1)	# simple setup
 		#@theme.generateTree(2, 3, 3)
 		#@theme.generateTree(0, 6, 3)
-		#@theme.generateTree(2, 4, 4)
+		@theme.generateTree(2, 4, 4)	# harder setup
 
 		# tests >>>
 		#child = Node.new("bbb1")
@@ -63,11 +63,12 @@ class MyWindow < Gosu::Window
 		# <<<
 
 		# pre-calculate all nodes positions
-		@nodes = @theme.calculatePositions(@nodeDistance)
-		#close
-		puts "Nodes: #{@nodes.length}"
+		#@nodes = @theme.calculatePositions(@nodeDistance)
+		@nodes = @theme.calculatePositionsDot()
+		#puts "Nodes: #{@nodes.length}"
 		STDOUT.flush
-
+		
+		close
 	end
 
 
