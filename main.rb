@@ -212,12 +212,12 @@ class MyWindow < Gosu::Window
 		end
 
 		if id == Gosu::MsWheelDown
-			puts "Zoom in"
+			#puts "Zoom in"
 			@zoom = @zoom - 0.1 if @zoom>0.1
 		end
 
 		if id == Gosu::MsWheelUp
-			puts "Zoom out"
+			#puts "Zoom out"
 			@zoom = @zoom + 0.1
 		end
 
