@@ -35,7 +35,7 @@ class MyWindow < Gosu::Window
 		@over = nil			# currenlty over node
 
 		# faking discussion
-		@theme = Node.new("0")
+		@theme = Node.new("n0")
 		# random tree
 		#@theme.generateTree(2, 2, 1)	# simple setup
 		#@theme.generateTree(2, 3, 3)
@@ -68,7 +68,7 @@ class MyWindow < Gosu::Window
 		#puts "Nodes: #{@nodes.length}"
 		STDOUT.flush
 		
-		close
+		#close
 	end
 
 

@@ -74,33 +74,58 @@ class Node
 	# calculate nodes positions, but with Graphviz
 	def calculatePositionsDot()
 		dotfile = "tmp.dot"
-		command = "dot -Tplain -Ktwopi -otmp.txt #{dotfile}"
+		command = "dot -Tplain -Ktwopi #{dotfile}"
 		commandGraph = "dot -Tpng -Ktwopi -otmp.png #{dotfile}"
 		struct = "digraph tmp {\n"
 		struct << "ordering=out\n"
-		struct << "ranksep=3\n"
+		#struct << "ranksep=3\n"
+		struct << "pack=50\n"
 		struct << "overlap=false\n"
 		struct << "ratio=auto\n"
 		struct << _getChildrenDot()
 		struct << "}"
 		#puts struct
 
+		# Struct save
 		File.open(dotfile, 'w') { |file| file.write(struct) }
+
+		# command
 		result = `#{command}`
+		positions = {}
+		scale = 20	# scale of nodes spreading
 		#puts result
+		result.each_line { |line|
+			#puts line
+			parts = line.match(/^node (.*?) (.*?) (.*?) /)
+			if parts 
+				 positions[parts[1]] = [parts[2].to_f*scale, parts[3].to_f*scale]
+			end
+		}
+		puts positions.inspect
 		#`#{commandGraph}`
 
+		#last, we set posisionts
+		_setChildrenDot(positions)
+
+	end
+
+
+	# recursive setting of positions calculated by Dot
+	def _setChildrenDot(positions_)
+		@x, @y = positions_[@content]
+		@children.each{ |child|
+			child._setChildrenDot(positions_)
+		}
 	end
 
 
 	def _getChildrenDot
 		struct = ""
 		#only for root
-		struct << "n#{@content} [root=\"true\"]\n" if !@parent
+		struct << "#{@content} [root=\"true\"]\n" if !@parent
 		@children.each{ |n|
 			#self and direct child
-			line = "n#{@content} -> n#{n.content}\n"
-			line.gsub! '/', 'x'
+			line = "#{@content} -> #{n.content}\n"
 			struct << line
 			#then loop next level
 			struct << n._getChildrenDot
@@ -112,7 +137,8 @@ class Node
 	# random tree generation
 	def generateTree(child_min_=1, child_max_=4, level_max_=2, level_=0)
 		for i in 1..(rand(child_min_..child_max_).to_i)
-			newchild =  Node.new("#{@content}/#{i}")
+			# TODO create incremented Ids instead of using Content
+			newchild =  Node.new("n#{@content}x#{i}")
 			newchild.parent = self
 			# not continuing a branch everytime
 			if(level_<level_max_ && rand > 0.3)
@@ -123,6 +149,7 @@ class Node
 	end
 
 
+	# highlight the tree branch on mouse over
 	def setHighlightTrunk(flag_)
 		@highlight = flag_
 		@parent.setHighlightTrunk(flag_) if @parent
