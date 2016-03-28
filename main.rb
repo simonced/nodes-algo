@@ -170,6 +170,8 @@ class MyWindow < Gosu::Window
 				is_over = true
 				node.setHighlightTrunk(true)
 				@over = @highlight = node
+				puts "over!"
+				STDOUT.flush
 			end
 		}
 
