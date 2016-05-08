@@ -40,7 +40,8 @@ class MyWindow < Gosu::Window
 		#@theme.generateTree(2, 2, 1)	# simple setup
 		#@theme.generateTree(2, 3, 3)
 		#@theme.generateTree(0, 6, 3)
-		@theme.generateTree(2, 4, 4)	# harder setup
+		#@theme.generateTree(2, 4, 4)	# harder setup
+		@theme.generateTree(5, 10, 10)	# even harder setup
 
 		# tests >>>
 		#child = Node.new("bbb1")

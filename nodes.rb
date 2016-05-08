@@ -7,6 +7,9 @@ class Node
 	attr_reader :over, :highlight
 	attr_writer :over, :highlight
 
+	@@randomChildrenCount = 0
+	@@randomChildrenMax = 800
+
 	def initialize(content_)
 		@parent = nil
 		@children = Array.new
@@ -74,7 +77,7 @@ class Node
 	# calculate nodes positions, but with Graphviz
 	def calculatePositionsDot()
 		dotfile = "tmp.dot"
-		command = "dot -Tplain -Ktwopi #{dotfile}"
+		command = "dot -Tplain -Ktwopi -otmp.txt #{dotfile}"
 		commandGraph = "dot -Tpng -Ktwopi -otmp.png #{dotfile}"
 		struct = "digraph tmp {\n"
 		struct << "ordering=out\n"
@@ -137,11 +140,13 @@ class Node
 	# random tree generation
 	def generateTree(child_min_=1, child_max_=4, level_max_=2, level_=0)
 		for i in 1..(rand(child_min_..child_max_).to_i)
+			# save the number of nodes generated and stop if max reached
+			@@randomChildrenCount = @@randomChildrenCount + 1
 			# TODO create incremented Ids instead of using Content
 			newchild =  Node.new("n#{@content}x#{i}")
 			newchild.parent = self
 			# not continuing a branch everytime
-			if(level_<level_max_ && rand > 0.3)
+			if(@@randomChildrenCount<@@randomChildrenMax and level_<level_max_ && rand > 0.3)
 				newchild.generateTree(child_min_, child_max_, level_max_, level_+1)
 			end
 			@children.push(newchild)
