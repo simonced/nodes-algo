@@ -143,7 +143,7 @@ class Node
 			# save the number of nodes generated and stop if max reached
 			@@randomChildrenCount = @@randomChildrenCount + 1
 			# TODO create incremented Ids instead of using Content
-			newchild =  Node.new("n#{@content}x#{i}")
+			newchild =  Node.new("#{@content}x#{i}")
 			newchild.parent = self
 			# not continuing a branch everytime
 			if(@@randomChildrenCount<@@randomChildrenMax and level_<level_max_ && rand > 0.3)
